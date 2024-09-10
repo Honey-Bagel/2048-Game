@@ -80,6 +80,19 @@ class Game:
 				rect = (col * SQSIZE, row * SQSIZE + 200, SQSIZE, SQSIZE)
 				# blit
 				pygame.draw.rect(surface, color, rect, width=10)
+
+	def show_message(self, surface, message):
+		
+		# Box
+		color = (205, 193, 180)
+		# rect
+		rect = (300, 300, 200, 400)
+		# blit
+		pygame.draw.rect(surface, color, rect)
+
+		label = self.config.font.render(message, 1, self.config.colors[0].color)
+		label_pos = (325, 325)
+		surface.blit(label, label_pos)
 		
 
 	def show_pieces(self, surface):

@@ -45,6 +45,7 @@ class Main:
 		while True:
 			game.show_bg(screen)
 			game.show_pieces(screen)
+			#game.show_message(screen, "Game Over\nPress 'r' to reset")
 
 
 			for event in pygame.event.get():
@@ -81,8 +82,6 @@ class Main:
 							if board.has_open_spot() and board.should_add_piece():
 								board.add_piece()
 								self.can_move = True
-							elif not board.has_open_spot():
-								game.end_game()
 							# print(game.board.open_spaces)
 							for i in range(len(game.board.squares)):
 								for j in range(len(game.board.squares[0])):
@@ -96,6 +95,12 @@ class Main:
 								print()
 							print()
 							self.can_move = True
+							if not board.has_open_spot():
+								game.reset()
+								game = self.game
+								board = self.game.board
+								self.load_highscore()
+								game.update_score(self.screen)
 
 					if event.key == pygame.K_r:
 						game.reset()
@@ -107,6 +112,7 @@ class Main:
 
 				# Quit
 				if event.type == pygame.QUIT:
+					print('quit')
 					self.quit()
 
 
