@@ -15,6 +15,9 @@ class Square:
 	def is_empty(self):
 		return self.piece == None
 	
+	def get_piece(self):
+		return self.piece
+	
 
 	@staticmethod
 	def in_range(*args):

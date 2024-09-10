@@ -27,6 +27,8 @@ class Board:
 		loc = self.open_spaces[random.randrange(0, self.open_spaces.__len__())]
 		r = loc // 4
 		c = loc % 4
+		if self.squares[r][c].has_piece():
+			print('Error square has a piece')
 		self.squares[r][c] = Square(r, c, Piece(1))
 		self.open_spaces.remove(loc)
 
@@ -45,9 +47,16 @@ class Board:
 				for c in range(4):
 					lcl_r = r
 					square = self.squares[r][c]
-					# if next square is empty move to that square
-					while (lcl_r+1) <= 3:
-						if square.has_piece() and self.squares[lcl_r+1][c].is_empty():
+					continue_while = True
+
+					while continue_while and (lcl_r+1) <= 3:
+
+						# if square below is off of board, do nothing
+						if(not Square.in_range(lcl_r+1, c) or (square.has_piece() and self.squares[lcl_r+1][c].has_piece() and square.piece.level != self.squares[lcl_r+1][c].piece.level)):
+							continue_while = False
+							continue
+						# if next square is empty move to that square
+						elif square.has_piece() and self.squares[lcl_r+1][c].is_empty():
 							piece = square.piece
 							self.squares[lcl_r][c] = Square(lcl_r, c)
 							self.open_spaces.append((lcl_r * 4) + c)
@@ -58,7 +67,8 @@ class Board:
 						elif self.squares[lcl_r+1][c].has_piece() and square.has_piece() and square.piece.level == self.squares[lcl_r+1][c].piece.level:
 							self.squares[lcl_r][c] = Square(lcl_r, c)
 							self.open_spaces.append((lcl_r * 4) + c)
-							# self.open_spaces.remove((lcl_r + 1) * 4 + c)
+							if self.open_spaces.count(((lcl_r +1) *4) + c) == 1:
+								self.open_spaces.remove((lcl_r + 1) * 4 + c)
 							self.squares[lcl_r+1][c].piece.inc_level()
 							self.main.update_score(2 ** self.squares[lcl_r+1][c].piece.get_level())
 							self.b_should_add_piece = True
@@ -70,9 +80,15 @@ class Board:
 				for r in range(4):
 					lcl_c = c
 					square = self.squares[r][c]
-					# if next squares is empty move to that square
-					while (lcl_c - 1) >= 0:
-						if square.has_piece() and self.squares[r][lcl_c - 1].is_empty():
+					continue_while = True
+					
+					while continue_while and (lcl_c - 1) >= 0:
+						# if square to left is off of board do nothing
+						if(not Square.in_range(r, lcl_c-1) or (square.has_piece() and self.squares[r][lcl_c - 1].has_piece() and square.piece.level != self.squares[r][lcl_c-1].piece.level)):
+							continue_while = False
+							continue
+						# if next squares is empty move to that square
+						elif square.has_piece() and self.squares[r][lcl_c - 1].is_empty():
 							piece = square.piece
 							self.squares[r][lcl_c] = Square(r, lcl_c)
 							self.open_spaces.append((r * 4) + lcl_c)
@@ -81,9 +97,13 @@ class Board:
 							self.b_should_add_piece = True
 						# if next piece is the same, upgrade that piece and combine them
 						elif self.squares[r][lcl_c-1].has_piece() and square.has_piece() and square.piece.level == self.squares[r][lcl_c-1].piece.level:
+							print()
+							print(r, lcl_c)
+							print(r, lcl_c-1)
 							self.squares[r][lcl_c] = Square(r, lcl_c)
 							self.open_spaces.append((r * 4) + lcl_c)
-							# self.open_spaces.remove((r * 4) + lcl_c - 1)
+							if self.open_spaces.count((r*4) + lcl_c - 1) == 1:
+								self.open_spaces.remove((r * 4) + lcl_c - 1)
 							self.squares[r][lcl_c-1].piece.inc_level()
 							self.main.update_score(2 ** self.squares[r][lcl_c-1].piece.get_level())
 							self.b_should_add_piece = True
@@ -95,9 +115,16 @@ class Board:
 				for r in range(4):
 					lcl_c = c
 					square = self.squares[r][c]
-					# if next square is empty move to that square
-					while(lcl_c+1) <= 3:
-						if square.has_piece() and self.squares[r][lcl_c+1].is_empty():
+					continue_while = True
+					
+					while continue_while and (lcl_c+1) <= 3:
+						# if square to right is off of board, do nothing
+						if(not Square.in_range(r, lcl_c+1) or (square.has_piece() and self.squares[r][lcl_c+1].has_piece() and square.piece.level != self.squares[r][lcl_c+1].piece.level)):
+							continue_while = False
+							continue
+
+						# if next square is empty move to that square
+						elif square.has_piece() and self.squares[r][lcl_c+1].is_empty():
 							piece = square.piece
 							self.squares[r][lcl_c] = Square(r, lcl_c)
 							self.open_spaces.append((r * 4) + lcl_c)
@@ -108,7 +135,8 @@ class Board:
 						elif self.squares[r][lcl_c+1].has_piece() and square.has_piece() and square.piece.level == self.squares[r][lcl_c+1].piece.level:
 							self.squares[r][lcl_c] = Square(r, lcl_c)
 							self.open_spaces.append((r * 4) + lcl_c)
-							# self.open_spaces.remove((r * 4) + lcl_c + 1)
+							if self.open_spaces.count((r*4) + lcl_c + 1) == 1:
+								self.open_spaces.remove((r * 4) + lcl_c + 1)
 							self.squares[r][lcl_c+1].piece.inc_level()
 							self.main.update_score(2 ** self.squares[r][lcl_c+1].piece.get_level())
 							self.b_should_add_piece = True
@@ -120,9 +148,16 @@ class Board:
 				for c in range(4):
 					lcl_r = r
 					square = self.squares[r][c]
-					# if next square is empty move to that square
-					while(lcl_r - 1) >= 0:
-						if square.has_piece() and self.squares[lcl_r-1][c].is_empty():
+					continue_while = True
+					
+					while continue_while and (lcl_r - 1) >= 0:
+						# if square above is off of board, do nothing
+						if(not Square.in_range(lcl_r-1, c) or (square.has_piece() and self.squares[lcl_r-1][c].has_piece() and square.piece.level != self.squares[lcl_r-1][c].piece.level)):
+							continue_while = False
+							continue
+
+						# if next square is empty move to that square
+						elif square.has_piece() and self.squares[lcl_r-1][c].is_empty():
 							piece = square.piece
 							self.squares[lcl_r][c] = Square(lcl_r, c)
 							self.open_spaces.append((lcl_r * 4) + c)
@@ -133,7 +168,8 @@ class Board:
 						elif self.squares[lcl_r-1][c].has_piece() and square.has_piece() and square.piece.level == self.squares[lcl_r-1][c].piece.level:
 							self.squares[lcl_r][c] = Square(lcl_r, c)
 							self.open_spaces.append((lcl_r * 4) + c)
-							# self.open_spaces.remove(((lcl_r-1) * 4) + c)
+							if self.open_spaces.count(((lcl_r-1) * 4) + c) == 1:
+								self.open_spaces.remove(((lcl_r-1) * 4) + c)
 							self.squares[lcl_r-1][c].piece.inc_level()
 							self.main.update_score(2 ** self.squares[lcl_r-1][c].piece.get_level())
 							self.b_should_add_piece = True

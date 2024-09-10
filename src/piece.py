@@ -1,5 +1,3 @@
-import os
-
 class Piece:
 
 	def __init__(self, level):

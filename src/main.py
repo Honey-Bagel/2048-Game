@@ -5,6 +5,8 @@ from const import *
 from game import Game
 from eDirection import Direction
 from fileUtil import FileUtil
+from square import Square
+from piece import Piece
 
 class Main:
 
@@ -50,36 +52,50 @@ class Main:
 				if event.type == pygame.KEYDOWN:
 					# left arrow or a key
 				
-					self.can_move = False
-					key_pressed = False
-					if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-						board.move(Direction.LEFT)
-						key_pressed = True
+					if self.can_move:
+						key_pressed = False
+						if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+							board.move(Direction.LEFT)
+							key_pressed = True
 
-					# down arrow or s key
-					if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-						board.move(Direction.DOWN)
-						key_pressed = True
+						# down arrow or s key
+						if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+							board.move(Direction.DOWN)
+							key_pressed = True
 
-					# right arrow or d key
-					if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-						board.move(Direction.RIGHT)
-						key_pressed = True
+						# right arrow or d key
+						if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+							board.move(Direction.RIGHT)
+							key_pressed = True
 
-					# up arrow or w key
-					if event.key == pygame.K_UP or event.key == pygame.K_w:
-						board.move(Direction.UP)
-						key_pressed = True
+						# up arrow or w key
+						if event.key == pygame.K_UP or event.key == pygame.K_w:
+							board.move(Direction.UP)
+							key_pressed = True
 
-					if key_pressed:
-						game.show_bg(screen)
-						game.show_pieces(screen)
+						if key_pressed:
+							self.can_move = False
+							game.show_bg(screen)
+							game.show_pieces(screen)
 
-						if board.has_open_spot() and board.should_add_piece():
-							board.add_piece()
+							if board.has_open_spot() and board.should_add_piece():
+								board.add_piece()
+								self.can_move = True
+							elif not board.has_open_spot():
+								game.end_game()
+							# print(game.board.open_spaces)
+							for i in range(len(game.board.squares)):
+								for j in range(len(game.board.squares[0])):
+									tempPiece = game.board.squares[i][j].piece
+									if(tempPiece):
+										print(2 ** tempPiece.level, end='')
+										print(' ', end='')
+									else:
+										print(0, end='')
+										print(' ', end='')
+								print()
+							print()
 							self.can_move = True
-						elif not board.has_open_spot():
-							game.end_game()
 
 					if event.key == pygame.K_r:
 						game.reset()
