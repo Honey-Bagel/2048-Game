@@ -76,6 +76,7 @@ class Main:
 
 						if key_pressed:
 							self.can_move = False
+							game.play_sound()
 							game.show_bg(screen)
 							game.show_pieces(screen)
 

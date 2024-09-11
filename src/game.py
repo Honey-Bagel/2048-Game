@@ -139,3 +139,6 @@ class Game:
 	def check_highscore(self):
 		if self.score > self.main.highscore:
 			FileUtil.save_highscore(self.score)
+
+	def play_sound(self):
+		self.config.move_sound.play()

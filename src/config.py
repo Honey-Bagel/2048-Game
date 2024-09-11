@@ -2,6 +2,7 @@ import pygame
 import os
 
 from color import Color
+from sound import Sound
 
 class Config:
 	
@@ -9,6 +10,9 @@ class Config:
 		self.colors = []
 		self._add_themes()
 		self.font = pygame.font.SysFont('monospace', 18, bold = True)
+		self.move_sound = Sound(
+			os.path.join('src/assets/move.wav')
+		)
 
 	def _add_themes(self):
 		color_empty = Color(204, 192, 179)
